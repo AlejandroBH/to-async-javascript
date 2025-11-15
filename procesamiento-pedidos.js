@@ -1,5 +1,44 @@
 console.log("=== SISTEMA DE PROCESAMIENTO DE PEDIDOS ===\n");
 
+const API_URL = "https://rickandmortyapi.com/api/character";
+
+// Obtener datos desde API remota
+async function obtenerDatos(url) {
+  try {
+    const peticion = await fetch(url);
+    const respuesta = await peticion.json();
+    return respuesta;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// Crea email a partir de nombre
+function crearEmail(valor) {
+  return valor.split(" ").join("").toLowerCase() + "@email.cl";
+}
+
+// Procesar datos obtenidos
+function procesarDatos(datos) {
+  const procesados = [];
+
+  datos.forEach((dato) => {
+    procesados.push({
+      id: dato.id,
+      nombre: dato.name,
+      email: crearEmail(dato.name),
+    });
+  });
+
+  return procesados;
+}
+
+// Guardar datos remotos localmente
+// obtenerDatos(API_URL).then(({ results }) => {
+//   const datos = procesarDatos(results);
+//   console.log(datos);
+// });
+
 // Simulación de API asíncrona
 const api = {
   // Simula llamada a base de datos
