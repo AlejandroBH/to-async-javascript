@@ -1,20 +1,35 @@
 console.log("=== SISTEMA DE PROCESAMIENTO DE PEDIDOS ===\n");
 
-// const API_URL = "https://rickandmortyapi.com/api/character";
+const API_URL = "https://rickandmortyapi.com/api/character";
 // const API_URL = "https://thesimpsonsapi.com/api/characters";
-const API_URL = "https://pokeapi.co/api/v2/pokemon?limit=100&offset=50";
+// const API_URL = "https://1pokeapi.co/api/v2/pokemon?limit=100&offset=50";
 
 // Obtener datos desde API remota
-async function obtenerDatos(url) {
+async function obtenerDatos(url, intentos = 5, espera = 1000) {
   console.log(`🚀 Extrayendo datos desde: ${url}`);
-  try {
-    const peticion = await fetch(url);
-    const respuesta = await peticion.json();
-    console.log(`✅ Datos extraídos con éxito desde: ${url}`);
-    return respuesta;
-  } catch (error) {
-    console.error(`❌ Error API no responde: ${error.message}`);
-    throw new Error(error.message);
+
+  for (let i = 1; i <= intentos; i++) {
+    try {
+      const peticion = await fetch(url);
+
+      if (!peticion.ok) {
+        throw new Error(`HTTP ${peticion.status} - ${peticion.statusText}`);
+      }
+
+      const respuesta = await peticion.json();
+      console.log(`✅ Datos extraídos con éxito desde: ${url}`);
+      return respuesta;
+    } catch (error) {
+      console.error(`❌ Intento ${i} fallido: ${error.message}`);
+
+      if (i < intentos) {
+        console.log(`🔄 Reintentando en ${espera}ms...`);
+        await new Promise((res) => setTimeout(res, espera));
+      } else {
+        console.error(`⛔ Todos los intentos fallaron para: ${url}`);
+        throw new Error(error.message);
+      }
+    }
   }
 }
 
