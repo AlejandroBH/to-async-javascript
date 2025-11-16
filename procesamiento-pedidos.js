@@ -1,14 +1,19 @@
 console.log("=== SISTEMA DE PROCESAMIENTO DE PEDIDOS ===\n");
 
-const API_URL = "https://rickandmortyapi.com/api/character";
+// const API_URL = "https://rickandmortyapi.com/api/character";
+// const API_URL = "https://thesimpsonsapi.com/api/characters";
+const API_URL = "https://pokeapi.co/api/v2/pokemon?limit=100&offset=50";
 
 // Obtener datos desde API remota
 async function obtenerDatos(url) {
+  console.log(`🚀 Extrayendo datos desde: ${url}`);
   try {
     const peticion = await fetch(url);
     const respuesta = await peticion.json();
+    console.log(`✅ Datos extraídos con éxito desde: ${url}`);
     return respuesta;
   } catch (error) {
+    console.error(`❌ Error API no responde: ${error.message}`);
     throw new Error(error.message);
   }
 }
@@ -22,6 +27,7 @@ function crearEmail(valor) {
 function procesarDatos(datos) {
   const procesados = [];
 
+  console.log("🚀 Procesando datos obtenidos remotamente...");
   datos.forEach((dato) => {
     procesados.push({
       id: dato.id,
@@ -30,14 +36,16 @@ function procesarDatos(datos) {
     });
   });
 
+  console.log(`✅ Se procesaron ${procesados.length} datos con éxito \n`);
   return procesados;
 }
 
-// Guardar datos remotos localmente
-// obtenerDatos(API_URL).then(({ results }) => {
-//   const datos = procesarDatos(results);
-//   console.log(datos);
-// });
+console.log(
+  "=== EXTRAYENDO Y GUARDANDO DATOS REMOTOS LOCALMENTE A PARTIR DE API ===\n"
+);
+
+const datosLocales = await obtenerDatos(API_URL);
+const usuarios = procesarDatos(datosLocales.results);
 
 // Simulación de API asíncrona
 const api = {
@@ -45,10 +53,10 @@ const api = {
   obtenerUsuario: (id) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const usuarios = {
-          1: { id: 1, nombre: "Ana García", email: "ana@email.com" },
-          2: { id: 2, nombre: "Carlos López", email: "carlos@email.com" },
-        };
+        // const usuarios = {
+        //   1: { id: 1, nombre: "Ana García", email: "ana@email.com" },
+        //   2: { id: 2, nombre: "Carlos López", email: "carlos@email.com" },
+        // };
         const usuario = usuarios[id];
         if (usuario) {
           resolve(usuario);
